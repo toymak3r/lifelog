@@ -1,0 +1,3 @@
+## {{timestamp}}
+
+{{ text_content }}

@@ -1,9 +1,10 @@
 # lifelog
 
-A Toolset to register a comprehensive life data:
-- Commuting register
+A Toolset for register a comprehensive life data:
+
+- Location and commuting register
 - Biometrics register
-- Diary 
+- Diary
 - To-Do Lists
 
 

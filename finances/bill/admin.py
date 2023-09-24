@@ -13,6 +13,7 @@ class BillAdmin(admin.ModelAdmin):
 class BillFrequencyAdmin(admin.ModelAdmin):
     pass
 
+
 @admin.register(BillPriority)
 class BillPriorityAdmin(admin.ModelAdmin):
     pass

@@ -39,7 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bill',
     'income',
-    'payment'
+    'payment',
+    'credit_card',
+    'dashboard'
 ]
 
 MIDDLEWARE = [
@@ -57,7 +59,7 @@ ROOT_URLCONF = 'finances.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

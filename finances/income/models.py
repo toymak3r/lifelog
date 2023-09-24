@@ -10,7 +10,7 @@ class IncomeFrequency(models.Model):
 
 class Income(models.Model):
     description = models.CharField(max_length=300)
-    value = models.DecimalField(max_digits=6, decimal_places=2)
+    value = models.DecimalField(max_digits=100, decimal_places=2)
     frequence = models.ForeignKey(IncomeFrequency, on_delete=models.DO_NOTHING)
     active = models.BooleanField(default=True)
 

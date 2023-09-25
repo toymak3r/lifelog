@@ -1,7 +1,7 @@
 # lifelog
 
-A Toolset for register a comprehensive life data:
-- Location and deslocation register
+A Toolset to register a comprehensive life data:
+- Communting register
 - Biometrics register
 - Diary 
 - To-Do Lists

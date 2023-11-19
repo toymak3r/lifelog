@@ -1,11 +1,12 @@
+import requests
+from coinbase.wallet.client import Client
 import json
 import locale
-locale.setlocale(locale.LC_ALL,'en_GB.UTF-8')
+locale.setlocale(locale.LC_ALL, 'en_GB.UTF-8')
 
-from coinbase.wallet.client import Client
-import requests
 
 # Function to get cryptocurrency values
+
 
 def get_cryptocurrency_value(crypto_symbol, currency='usd'):
     try:
@@ -22,6 +23,7 @@ def get_cryptocurrency_value(crypto_symbol, currency='usd'):
         print(f"Error: {e}")
         return None
 
+
 def convert_cryptocurrency(crypto_symbol, amount, currency='usd'):
     crypto_value = get_cryptocurrency_value(crypto_symbol, currency)
     if crypto_value is not None:
@@ -29,7 +31,8 @@ def convert_cryptocurrency(crypto_symbol, amount, currency='usd'):
         return converted_value
     else:
         return None
-    
+
+
 class Coinbase:
 
     _client = ''   # Coinbase Client Handler
@@ -51,9 +54,11 @@ class Coinbase:
         accounts = self._client.get_accounts()
         for account in accounts["data"]:
             if float(account["balance"]["amount"]) != 0.0:
-                   currency = account["currency"]
-                   if currency == 'ETH2': 
-                       currency = 'ethereum'
-                   price = convert_cryptocurrency(currency, float(account["balance"]["amount"]), 'gbp') 
-                   if price != None:
-                    print(f'{account["currency"]} : {account["balance"]["amount"]} ({locale.currency(price)})')
+                currency = account["currency"]
+                if currency == 'ETH2':
+                    currency = 'ethereum'
+                price = convert_cryptocurrency(
+                    currency, float(account["balance"]["amount"]), 'gbp')
+                if price != None:
+                    print(
+                        f'{account["currency"]} : {account["balance"]["amount"]} ({locale.currency(price)})')

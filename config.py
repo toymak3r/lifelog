@@ -16,14 +16,18 @@ from pathlib import Path
 
 
 class Config:
-    user_dir = os.path.join(Path.home(), '.loglife')         # user directory to hold the files
+    # user directory to hold the files
+    user_dir = os.path.join(Path.home(), '.lifelog')
     template_config_file = 'templates/config.template.json'  # template of configuration
-    config = ''                                              # content of configuration 
-    config_file = 'config.json'                              # default configuration file
-    config_file_path = os.path.join(user_dir, config_file)   # complete path for config file
+    # content of configuration
+    config = ''
+    # default configuration file
+    config_file = 'config.json'
+    # complete path for config file
+    config_file_path = os.path.join(user_dir, config_file)
     config_file_handle = ''                                  # config file handle
 
-    def __init__(self, user_dir =None):
+    def __init__(self, user_dir=None):
 
         if (user_dir is not None):
             self.user_dir = user_dir
@@ -39,15 +43,16 @@ class Config:
             self.close_file()
         else:
             self.open_file('w')
-            template_content = open(self.template_config_file,'r')
+            template_content = open(self.template_config_file, 'r')
             self.config = json.loads(template_content.read())
             template_content.close()
             self.save_file()
             self.config_file_handle.close()
 
     def open_file(self, mode):
-        self.config_file_handle = open(os.path.join(self.user_dir, self.config_file), mode)
-    
+        self.config_file_handle = open(os.path.join(
+            self.user_dir, self.config_file), mode)
+
     def close_file(self):
         self.config_file_handle.close()
 
@@ -55,10 +60,8 @@ class Config:
         try:
             self.config = json.loads(self.config_file_handle.read())
         except:
-            logging.error('config file problematic, please check the config file: {}'.format(self.config_file_path))
+            logging.error(f'config file problematic, please check it: {self.config_file_path}')
             exit(-1)
-
 
     def save_file(self):
         self.config_file_handle.write(json.dumps(self.config))
-

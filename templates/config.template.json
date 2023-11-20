@@ -1,3 +1,4 @@
 {
-    "log_prefix":"log_"
+    "log_prefix":"log_",
+    "templates_dir": "templates"
 }

@@ -175,6 +175,6 @@ class OPMLManager:
                     with open(file_path, 'wb') as out_file:
                         shutil.copyfileobj(response.raw, out_file)
                 else:
-                    raise self.ImageDownloadError('Was not possible to cache the file')
+                    raise OPMLManager.ImageDownloadError('Was not possible to cache the file')
             except Exception as e:
-                raise self.CustomException(f"Error updating image: {e}")
+                raise OPMLManager.CustomException(f"Error updating image: {e}")

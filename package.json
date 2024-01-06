@@ -3,9 +3,11 @@
   "version": "1.0.0",
   "description": "A dashboard for your life.",
   "main": "main.js",
-  "scripts": {
+  "scripts": {  
+    "prestart": "./run.sh &",
     "start": "electron .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "poststart": "pkill gunicorn"
   },
   "repository": {
     "type": "git",

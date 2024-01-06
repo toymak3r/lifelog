@@ -1,7 +1,7 @@
 from wsgiref.simple_server import make_server
 import falcon
 from datetime import date
-from config import Config
+from core.config import Config
 
 
 actual_date = date.today()

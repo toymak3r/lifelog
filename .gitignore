@@ -132,4 +132,4 @@ dmypy.json
 *.opml
 
 # Nodes
-node_modules
+node_modules/

@@ -1,20 +1,28 @@
 .lifelog {
   background-color: rgb(35, 34, 39);
-  -webkit-app-region: drag;
 }
 
+.lifelogbar {
+  -webkit-app-region: drag;
+}
 body {
   background-color: rgb(35, 34, 39);
+  height:100%;
 
 }
 
 @font-face {
     font-family: LifeLog;
-    src: url(assets/fonts/zai_JanuszowskiCharacter1594v2.ttf);
+    src: url(../fonts/zai_JanuszowskiCharacter1594v2.ttf);
+
 }
 
 .lifelog_title {
-  font-family: Lifelog
+  font-family: Lifelog;
+}
+
+.lifelog-logo {
+  max-width: fit-content;
 }
 
 /* Style the sidebar - fixed full height */
@@ -58,4 +66,75 @@ body {
 
 .content {
   position: relative;
+  height:100%;
+  margin-left: 160px; /* Same as the width of the sidenav */
+  padding: 0px 10px;
+}
+
+.podcasts-grid {
+  overflow-y: scroll;
+  width: 100%;
+  max-height: 90dvh;
+}
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent; /* make scrollbar transparent */
+}
+
+.podcast-cover-thumbnail {
+  border: 2px solid #111;
+  width: 100px;
+  height: 100px;
+}
+.podcast-add-btn {
+  position: fixed;
+  right: 1rem;
+  top: 50dvh;
+  
+  font-size: 3em;
+  color: #111000;
+}
+
+.podcast-add-btn:hover {
+  color: forestgreen;
+}
+
+.imageContainer {
+  background-color: #001d06;
+  height: 100px;
+  max-width: 10rem;
+  position: relative;
+  border:#818181
+}
+
+.cardContainer {
+  padding: 5px;
+}
+
+ /* The Modal (background) */
+.modal {
+  color: whitesmoke;
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  color: white;
+  margin: 20% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  max-width: 30%;
+}
+
+.modal-content:button {
+  max-width: 10%;
 }

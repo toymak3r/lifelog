@@ -1,0 +1,15 @@
+<div class="container mt-4 podcasts-grid">
+  <div class="row" id="podcasts">
+
+  </div>
+</div>
+
+<a onclick="addPodcast()"><i class="fa-solid fa-circle-plus podcast-add-btn"></i></a>
+
+<div id="addPodcast" class="modal">
+    <div class="modal-content bg-dark">
+      <label for="podcastRSSInput" class="form-label">Podcast RSS URL</label>
+      <input type="text" class="form-control" id="podcastRSSInput" />
+      <button type="submit" class="btn btn-success" onclick="addPodcastByRss(podcastRSSInput.value)"> submit </button>
+    </div>
+</div>

@@ -4,27 +4,27 @@ import shutil
 import xml.etree.ElementTree as ET
 import requests
 import hashlib
+import feedparser
+from datetime import datetime
+
 
 """
-OPMLManager class for managing OPML files.
-
-This class provides methods for reading, extracting, adding, removing, and saving feeds in an OPML file.
-It also includes a method for updating the image associated with a feed URL.
+A class for managing OPML (Outline Processor Markup Language) files.
 
 Attributes:
-    file_path (str): The path to the OPML file.
+    file_path (str): The file path of the OPML file.
     opml_root (Element): The root element of the OPML file.
 
 Methods:
-    __init__(file_path): Initializes the OPMLManager object with the specified file path.
+    __init__(file_path): Initializes the OPMLManager instance with the file path of the OPML file.
     read_opml(): Reads the OPML file and returns the root element.
-    extract_feeds(): Extracts the feeds from the OPML file and returns a list of dictionaries.
+    extract_feeds(): Extracts feeds from the OPML file and returns a list of dictionaries containing feed information.
     add_feed(title, new_feed_url, type='rss', html=None, imageUrl=None): Adds a new feed to the OPML file.
     remove_feed_by_url(feed_url): Removes a feed from the OPML file based on its URL.
     save_opml(): Saves the changes made to the OPML file.
-    get_image_url(feed_url): Returns the image URL associated with a feed URL.
-    update_image(url): Updates the image associated with a feed URL by caching it locally.
-
+    get_image_url(feed_url): Returns the image URL for a feed based on its URL.
+    update_image(url, cache_directory): Updates the image for a feed by downloading it from the provided URL and saving it locally.
+    add_feed_from_rss(new_feed_url): Adds a new feed to the OPML file by extracting information from an RSS feed URL.
 """
 
 
@@ -64,7 +64,8 @@ class OPMLManager:
             Element: The root element of the OPML file.
         """
         try:
-            tree = ET.parse(self.file_path)
+            parser = ET.XMLParser(encoding="utf-8")
+            tree = ET.parse(self.file_path, parser=parser)
             root = tree.getroot()
             return root
         except ET.ParseError as e:
@@ -110,9 +111,10 @@ class OPMLManager:
             raise ValueError("HTML URL must be a string.")
         if imageUrl is not None and not isinstance(imageUrl, str):
             raise ValueError("Image URL must be a string.")
-    
+
         body = self.opml_root.find(".//body")
-        new_feed_attributes = {"text": title, "type": type, "xmlUrl": new_feed_url}
+        new_feed_attributes = {"text": title,
+                               "type": type, "xmlUrl": new_feed_url}
         if html is not None:
             new_feed_attributes["htmlUrl"] = html
         if imageUrl is not None:
@@ -130,12 +132,27 @@ class OPMLManager:
         body = self.opml_root.find(".//body")
         for outline in body.findall(".//outline"):
             if outline.get("xmlUrl") == feed_url:
-                body.remove(outline)
+                try:
+                    body.remove(outline)
+                    return True
+                except ValueError:
+                    return False
 
     def save_opml(self):
         """
         Saves the changes made to the OPML file.
         """
+        head = self.opml_root.find(".//dateModified")
+        title = self.opml_root.find(".//title")
+        # Get the current date and time
+        current_datetime = datetime.now()
+
+        # Format the current date and time as "3 Jan 2024 22:20:16"
+        formatted_current_datetime = current_datetime.strftime(
+            "%d %b %Y %H:%M:%S")
+
+        head.text = formatted_current_datetime
+        title.text = 'lifelog OPML Manager'
         tree = ET.ElementTree(self.opml_root)
         tree.write(self.file_path)
 
@@ -175,6 +192,41 @@ class OPMLManager:
                     with open(file_path, 'wb') as out_file:
                         shutil.copyfileobj(response.raw, out_file)
                 else:
-                    raise OPMLManager.ImageDownloadError('Was not possible to cache the file')
+                    raise OPMLManager.ImageDownloadError(
+                        'Was not possible to cache the file')
             except Exception as e:
                 raise OPMLManager.CustomException(f"Error updating image: {e}")
+
+    def add_feed_from_rss(self, new_feed_url):
+        """
+        Adds a new feed to the OPML file by extracting information from an RSS feed URL.
+
+        Args:
+            new_feed_url (str): The URL of the new feed.
+        """
+        try:
+            # Parse the RSS feed
+            feed = feedparser.parse(new_feed_url)
+            if 'feed' in feed and 'title' in feed.feed:
+                title = feed.feed.title
+            else:
+                raise OPMLManager.CustomException(
+                    "Error retrieving feed title.")
+
+            # Use the first entry's HTML link as the HTML URL (if available)
+            html_url = feed.feed.link
+
+            # Use the first entry's cover image as the image URL (if available)
+            image_url = feed.feed.image.url
+
+            # Add the feed to the OPML file using the existing add_feed method
+            self.add_feed(title=title, new_feed_url=new_feed_url,
+                          type='rss', html=html_url, imageUrl=image_url)
+            
+            self.save_opml()
+
+            return True
+
+        except Exception as e:
+            raise OPMLManager.CustomException(
+                f"Error adding feed from RSS: {e}")

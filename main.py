@@ -2,12 +2,11 @@ from wsgiref.simple_server import make_server
 import falcon
 from datetime import date
 from core.config import Config
+from podcasts.podcast_service import Podcasts
 
 
 actual_date = date.today()
 configuration = Config()
-
-from podcasts.podcast_service import Podcasts
 
 app = falcon.App()
 

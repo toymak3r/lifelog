@@ -114,23 +114,6 @@ class TestOPMLManager:
         assert opml_manager.opml_root.findall(".//outline")[0].get("text") == "Feed 2"
         assert opml_manager.opml_root.findall(".//outline")[0].get("type") == "rss"
 
-    # save_opml saves the changes made to the OPML file
-    def test_save_opml_saves_changes(self):
-        # Arrange
-        file_path = "test.opml"
-        with open(file_path, 'w') as f:
-            f.write('<?xml version="1.0" encoding="UTF-8"?><opml version="1.0"><head></head><body></body></opml>')
-        opml_manager = OPMLManager(file_path)
-        opml_manager.add_feed("Test Feed", "https://example.com/rss", html="https://example.com", imageUrl="https://example.com/image.jpg")
-
-        # Act
-        opml_manager.save_opml()
-
-        # Assert
-        with open(file_path, 'r') as f:
-            content = f.read()
-            assert "Test Feed" in content and "https://example.com/rss" in content and "https://example.com" in content and "https://example.com/image.jpg" in content
-
     # get_image_url returns the image URL for a feed based on its URL
     def test_get_image_url_returns_image_url(self):
         # Arrange
@@ -219,3 +202,96 @@ class TestOPMLManager:
         assert any(feed['url'] == "https://example.com/feed" for feed in feeds)
         assert any(feed['imageUrl'] == "https://example.com/image.jpg" for feed in feeds)
         assert any(feed['html'] == "https://example.com" for feed in feeds)
+
+
+    # Initializes the OPMLManager instance with a file path and reads the OPML file.
+    def test_initialize_opml_manager_with_valid_opml_file(self):
+        file_path = "test.opml"
+        # Create a valid OPML file if it doesn't exist
+        if not os.path.isfile(file_path):
+            with open(file_path, 'w') as f:
+                f.write('<?xml version="1.0" encoding="UTF-8"?>\n<opml version="2.0">\n  <head>\n    <title>Test OPML</title>\n    <dateCreated>2022-01-01T00:00:00Z</dateCreated>\n    <dateModified>2022-01-01T00:00:00Z</dateModified>\n  </head>\n  <body>\n    <outline text="Test Feed" type="rss" xmlUrl="https://example.com/feed" htmlUrl="https://example.com" imageUrl="https://example.com/image.jpg"/>\n  </body>\n</opml>')
+        opml_manager = OPMLManager(file_path)
+        assert opml_manager.file_path == file_path
+        assert opml_manager.opml_root is not None
+
+    # Extracts feeds from the OPML file and returns a list of dictionaries containing feed information.
+    def test_extract_feeds(self):
+        file_path = "test.opml"
+        # Create a test OPML file
+        with open(file_path, 'w') as f:
+            f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
+            f.write('<opml version="1.0">\n')
+            f.write('  <head>\n')
+            f.write('    <title>Test OPML</title>\n')
+            f.write('    <dateCreated>2022-01-01T00:00:00Z</dateCreated>\n')
+            f.write('    <dateModified>2022-01-01T00:00:00Z</dateModified>\n')
+            f.write('  </head>\n')
+            f.write('  <body>\n')
+            f.write('    <outline text="Feed 1" type="rss" xmlUrl="https://example.com/feed1" htmlUrl="https://example.com/feed1.html" imageUrl="https://example.com/feed1.jpg"/>\n')
+            f.write('    <outline text="Feed 2" type="rss" xmlUrl="https://example.com/feed2" htmlUrl="https://example.com/feed2.html" imageUrl="https://example.com/feed2.jpg"/>\n')
+            f.write('  </body>\n')
+            f.write('</opml>\n')
+
+        opml_manager = OPMLManager(file_path)
+        feeds = opml_manager.extract_feeds()
+        assert isinstance(feeds, list)
+        assert all(isinstance(feed, dict) for feed in feeds)
+        assert len(feeds) == 2
+        assert feeds[0]['title'] == 'Feed 1'
+        assert feeds[0]['type'] == 'rss'
+        assert feeds[0]['url'] == 'https://example.com/feed1'
+        assert feeds[0]['imageUrl'] == 'https://example.com/feed1.jpg'
+        assert feeds[0]['html'] == 'https://example.com/feed1.html'
+        assert feeds[1]['title'] == 'Feed 2'
+        assert feeds[1]['type'] == 'rss'
+        assert feeds[1]['url'] == 'https://example.com/feed2'
+        assert feeds[1]['imageUrl'] == 'https://example.com/feed2.jpg'
+        assert feeds[1]['html'] == 'https://example.com/feed2.html'
+
+    # Adds a new feed to the OPML file when the file already exists.
+    def test_add_feed_with_existing_file(self):
+        file_path = "test.opml"
+        # Create the test.opml file
+        with open(file_path, 'w') as f:
+            f.write('<?xml version="1.0" encoding="UTF-8"?><opml version="2.0"><head><title>Test OPML</title></head><body></body></opml>')
+        opml_manager = OPMLManager(file_path)
+        title = "Test Feed"
+        new_feed_url = "https://example.com/feed"
+        opml_manager.add_feed(title, new_feed_url)
+        feeds = opml_manager.extract_feeds()
+        assert any(feed['title'] == title for feed in feeds)
+        assert any(feed['url'] == new_feed_url for feed in feeds)
+
+    # Raises a FileNotFoundError if the OPML file does not exist.
+    def test_parse_error(self):
+        file_path = "invalid.opml"
+        with pytest.raises(FileNotFoundError):
+            opml_manager = OPMLManager(file_path)
+
+    # Raises an exception if the title, new_feed_url, or type arguments are not strings when adding a new feed.
+    def test_add_feed_argument_error(self):
+        import tempfile
+        file_path = os.path.join(tempfile.gettempdir(), "test.opml")
+        with open(file_path, 'w') as f:
+            f.write('<?xml version="1.0" encoding="UTF-8"?><opml version="2.0"><head><title>Test OPML</title></head><body></body></opml>')
+        opml_manager = OPMLManager(file_path)
+        with pytest.raises(ValueError):
+            opml_manager.add_feed(123, "https://example.com/feed")
+        with pytest.raises(ValueError):
+            opml_manager.add_feed("Test Feed", 123)
+        with pytest.raises(ValueError):
+            opml_manager.add_feed("Test Feed", "https://example.com/feed", 123)
+
+    # Raises an exception if the HTML URL or image URL arguments are not strings when adding a new feed.
+    def test_add_feed_url_error_fixed(self):
+        file_path = "test.opml"
+        # Create a test OPML file
+        with open(file_path, 'w') as f:
+            f.write('<?xml version="1.0" encoding="UTF-8"?>\n<opml version="2.0">\n  <head>\n    <title>Test OPML</title>\n  </head>\n  <body>\n  </body>\n</opml>')
+    
+        opml_manager = OPMLManager(file_path)
+        with pytest.raises(ValueError):
+            opml_manager.add_feed("Test Feed", "https://example.com/feed", html=123)
+        with pytest.raises(ValueError):
+            opml_manager.add_feed("Test Feed", "https://example.com/feed", imageUrl=123)

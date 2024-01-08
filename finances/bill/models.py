@@ -5,6 +5,13 @@ from django.core.exceptions import ValidationError
 
 artfacts_fs = FileSystemStorage(location="files/artifacts/")
 
+class Currency(models.Model):
+    description = models.CharField(max_length=200)
+    slug = models.CharField(max_length=200)
+    symbol = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.slug
 
 class BillPriority(models.Model):
     description = models.CharField(max_length=200)
@@ -34,7 +41,7 @@ class Bill(models.Model):
     value = models.DecimalField(max_digits=6, decimal_places=2)
     due_date = models.DateField(blank=True, null=True)
     due_day = models.IntegerField(validators=[MaxValueValidator(31)],)
-
+    currency = models.ForeignKey(Currency, on_delete=models.DO_NOTHING, blank=True, null=True)
     unique = models.BooleanField(default=True)
     artifact = models.FileField(storage=artfacts_fs, blank=True)
     quantity = models.IntegerField(default=1)

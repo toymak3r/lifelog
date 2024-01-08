@@ -4,6 +4,7 @@
 
 .lifelogbar {
   -webkit-app-region: drag;
+  width: 100%;
 }
 body {
   background-color: rgb(35, 34, 39);
@@ -137,4 +138,21 @@ body {
 
 .modal-content:button {
   max-width: 10%;
+}
+
+.monthly-bills {
+}
+
+.bills-footer {
+  width: 100%;
+  color: white;
+  background-color: rgb(35, 34, 39);
+  left: 0;
+  bottom: 0;
+  text-align: center;
+  padding: 10px; /* Adjust padding as needed */
+}
+
+.crypto-investments{
+  mar
 }

@@ -1,9 +1,9 @@
+import os
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
 from django.db.models import Sum
 from .models import Bill
-import json
 from investments.coinbase.Coinbase import Coinbase
 def calculate_percentage(value, total):
     if total == 0:
@@ -16,7 +16,9 @@ def index(request):
     bills = Bill.objects.all()
     total = Bill.objects.aggregate(total=Sum('value'))['total']
 
-    coinbase = Coinbase('QT04LeAVJu5AIr27', 'hOdqwWpEhcJos5ijE0MUlYXYIkHtujtO')
+    coinbase = Coinbase(os.env['COINBASE_API_KEY'],
+                        os.env['COINBASE_API_SECRET'])
+    
     coinbase.update_balance()
 
     print(coinbase._coins)

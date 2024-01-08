@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-n2tt1@h#u7uc^4irs%^+@is6=8j0vfz2a_363j2=a07!*qd5e2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -119,6 +119,10 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
+
+STATICFILES_DIRS = [
+    "/home/toy/lifelog/assets/",
+]
 
 STATIC_URL = 'static/'
 

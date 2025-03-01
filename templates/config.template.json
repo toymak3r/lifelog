@@ -1,7 +1,9 @@
 {
     "log_prefix":"log_",
+    "log_level": "INFO",
+    "data_directory": "~/.loglife/data",
+    "log_directory": "~/.loglife/logs",
     "enable_podcasts": true,
     "podcasts_opml_file": "~/.loglife/default_opml_file.opml",
-    "log_level": "INFO",
-    "data_directory": "~/.loglife/data"
+    "roms_directory": "~/.loglife/roms"
 }

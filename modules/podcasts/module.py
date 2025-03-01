@@ -1,8 +1,9 @@
-from typing import Dict
 import logging
+import os
+import shutil
+from fastapi import APIRouter, HTTPException, Request
 from core.module import LifeLogModule
 from .opml import OPMLManager
-from fastapi import APIRouter, HTTPException, Request
 from .podfeeds import PodFeeds
 
 class Podcasts(LifeLogModule):
@@ -17,6 +18,15 @@ class Podcasts(LifeLogModule):
             if not opml_file:
                 logging.error("Podcasts OPML file not specified in the configuration.")
                 return False
+
+            if not os.path.exists(opml_file):
+                logging.warning(f"Podcasts OPML file {opml_file} not found. Creating a new one from template.")
+                template_path = os.path.join(os.path.dirname(__file__), 'templates', 'example.opml')
+                if not os.path.exists(template_path):
+                    logging.error(f"Template OPML file {template_path} not found.")
+                    return False
+                os.makedirs(os.path.dirname(opml_file), exist_ok=True)
+                shutil.copy(template_path, opml_file)
 
             self.service = PodFeeds(opml_file)
             return True

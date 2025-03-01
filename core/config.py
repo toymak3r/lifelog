@@ -2,6 +2,8 @@ import json
 import logging
 import os
 from pathlib import Path
+from typing import Dict, Optional
+from .module import LifeLogModule
 
 #  LifeLog
 #  https://github.com/toymak3r/lifelog
@@ -19,50 +21,53 @@ class Config:
     # user directory to hold the files
     user_dir = os.path.join(Path.home(), '.loglife')
     template_config_file = 'templates/config.template.json'  # template of configuration
-    # content of configuration
-    config = ''
     # default configuration file
     config_file = 'config.json'
     # complete path for config file
     config_file_path = os.path.join(user_dir, config_file)
-    config_file_handle = ''                                  # config file handle
 
-    def __init__(self, user_dir=None):
-
-        if (user_dir is not None):
+    def __init__(self, user_dir: Optional[str] = None):
+        self.modules: Dict[str, LifeLogModule] = {}
+        
+        if user_dir:
             self.user_dir = user_dir
 
+        self._ensure_user_directory()
+        self._load_configuration()
+
+    def _ensure_user_directory(self):
         if not os.path.exists(self.user_dir):
             logging.warning(
-                'Loglife user directory do not exit, creating: %s!' % self.user_dir)
+                'Lifelog user directory does not exist, creating: %s!', self.user_dir)
             os.makedirs(self.user_dir)
 
+    def _load_configuration(self):
         if os.path.exists(self.config_file_path):
-            self.open_file('r')
             self.load_file()
-            self.close_file()
         else:
-            self.open_file('w')
-            template_content = open(self.template_config_file, 'r')
-            self.config = json.loads(template_content.read())
-            template_content.close()
-            self.save_file()
-            self.config_file_handle.close()
-
-    def open_file(self, mode):
-        self.config_file_handle = open(os.path.join(
-            self.user_dir, self.config_file), mode)
-
-    def close_file(self):
-        self.config_file_handle.close()
+            self.create_default_config()
 
     def load_file(self):
         try:
-            self.config = json.loads(self.config_file_handle.read())
-        except:
-            logging.error('config file problematic, please check the config file: {}'.format(
-                self.config_file_path))
+            with open(self.config_file_path, 'r') as file:
+                self.config = json.load(file)
+        except (json.JSONDecodeError, IOError) as e:
+            logging.error('Error loading config file: %s', e)
+            exit(-1)
+
+    def create_default_config(self):
+        try:
+            with open(self.template_config_file, 'r') as template_file:
+                self.config = json.load(template_file)
+            self.save_file()
+        except (json.JSONDecodeError, IOError) as e:
+            logging.error('Error creating default config file: %s', e)
             exit(-1)
 
     def save_file(self):
-        self.config_file_handle.write(json.dumps(self.config))
+        try:
+            with open(self.config_file_path, 'w') as file:
+                json.dump(self.config, file, indent=4)
+        except IOError as e:
+            logging.error('Error saving config file: %s', e)
+            exit(-1)

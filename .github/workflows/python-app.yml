@@ -10,7 +10,7 @@ on:
     branches: [ main, develop ]
 
 permissions:
-  contents: read
+  contents: write  # Changed from 'read' to 'write' to allow pushing
 
 jobs:
   test:
@@ -44,3 +44,29 @@ jobs:
         file: ./coverage.xml
         flags: unittests
         fail_ci_if_error: false
+
+    - name: Create Coverage Badge
+      if: matrix.python-version == '3.12'  # Only do this once
+      run: |
+        COVERAGE=$(python -c "import xml.etree.ElementTree as ET; print(round(float(ET.parse('coverage.xml').getroot().attrib['line-rate']) * 100, 2))")
+        echo "Coverage: ${COVERAGE}%"
+        echo "COVERAGE=${COVERAGE}" >> $GITHUB_ENV
+        
+        # Create a badge using shields.io
+        BADGE_URL="https://img.shields.io/badge/coverage-${COVERAGE}%25-$([ $COVERAGE -ge 80 ] && echo brightgreen || echo orange)"
+        echo "BADGE_URL=${BADGE_URL}" >> $GITHUB_ENV
+        
+        # Update README with badge URL
+        # Create the badge with the format [![Coverage][badge-url]]
+        BADGE_URL="https://img.shields.io/badge/coverage-${COVERAGE}%25-$([ $COVERAGE -ge 80 ] && echo brightgreen || echo orange)"
+        sed -i "s|\\[\\!\\[Coverage\\]\\[https://img.shields.io/badge/coverage-.*%.*-.*\\]|\\[\\!\\[Coverage\\]\\[${BADGE_URL}\\]|" README.md || echo "Badge not updated"
+
+    - name: Commit coverage badge if changed
+      if: matrix.python-version == '3.12'  # Only do this once
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add README.md
+        git commit -m "Update coverage badge to ${{ env.COVERAGE }}%" || echo "No changes to commit"
+        git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+        git push

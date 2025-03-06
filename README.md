@@ -1,6 +1,7 @@
 # Lifelog
 
-[![Coverage](https://github.com/toymak3r/lifelog/actions/workflows/python-app.yml/badge.svg)](https://github.com/toymak3r/lifelog/actions/workflows/python-app.yml)
+[![Tests](https://github.com/toymak3r/lifelog/actions/workflows/python-app.yml/badge.svg)](https://github.com/toymak3r/lifelog/actions/workflows/python-app.yml)
+[![Coverage](https://img.shields.io/badge/coverage-0%25-red)](https://github.com/toymak3r/lifelog/actions/workflows/python-app.yml)
 
 Welcome to LifeLog, a personal journaling and life tracking application.
 
@@ -62,4 +63,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Contact
 
-For any questions or feedback, please contact us at support@lifelog.com.
+For any questions or feedback, please contact us at toymak3r@gmail.com.

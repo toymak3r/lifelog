@@ -51,6 +51,7 @@ class Config:
         try:
             with open(self.config_file_path, 'r') as file:
                 self.config = json.load(file)
+            self._expand_paths()
         except (json.JSONDecodeError, IOError) as e:
             logging.error('Error loading config file: %s', e)
             exit(-1)
@@ -59,6 +60,7 @@ class Config:
         try:
             with open(self.template_config_file, 'r') as template_file:
                 self.config = json.load(template_file)
+            self._expand_paths()
             self.save_file()
         except (json.JSONDecodeError, IOError) as e:
             logging.error('Error creating default config file: %s', e)
@@ -71,3 +73,13 @@ class Config:
         except IOError as e:
             logging.error('Error saving config file: %s', e)
             exit(-1)
+
+    def _expand_paths(self):
+        def expand_path(path):
+            if isinstance(path, str):
+                return os.path.expanduser(path)
+            return path
+
+        for key in self.config:
+            if any(key.endswith(suffix) for suffix in ['_directory', '_file', '_path']):
+                self.config[key] = expand_path(self.config[key])

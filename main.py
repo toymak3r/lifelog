@@ -24,6 +24,13 @@ def create_app(config=None):
     else:
         logging.error("Podcasts module not loaded")
         
+    roms = module_manager.load_module('roms', config.config)
+    if roms:
+        logging.info("ROMs module loaded successfully")
+        app.include_router(roms.get_router())
+    else:
+        logging.error("ROMs module not loaded")
+        
     return app
 
 app = create_app()

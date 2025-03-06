@@ -1,4 +1,6 @@
-# LifeLog
+# Lifelog
+
+[![Python Tests](https://github.com/yourusername/lifelog/actions/workflows/tests.yml/badge.svg)](https://github.com/yourusername/lifelog/actions/workflows/tests.yml)
 
 Welcome to LifeLog, a personal journaling and life tracking application.
 

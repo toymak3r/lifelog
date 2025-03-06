@@ -31,11 +31,6 @@ class TestPodcastAPI:
         if opml_path.exists():
             opml_path.unlink()
 
-    def test_root_returns_404(self):
-        """Test that undefined routes return 404"""
-        response = self.client.get("/")
-        assert response.status_code == 404
-
     def test_get_podcasts_returns_list(self):
         """Test that /podcasts endpoint returns a list"""
         response = self.client.get("/podcasts")

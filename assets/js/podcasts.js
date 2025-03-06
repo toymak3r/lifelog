@@ -4,7 +4,7 @@
  */
 function load_covers() {
     // Fetch data from the web service
-    fetch('http://localhost:5000/podcasts', {
+    fetch('http://localhost:8000/podcasts', {
         headers: new Headers({
             'Accept': 'application/json; charset=utf-8'
         })

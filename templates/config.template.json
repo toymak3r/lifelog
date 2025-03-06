@@ -5,5 +5,6 @@
     "log_directory": "~/.loglife/logs",
     "enable_podcasts": true,
     "podcasts_opml_file": "~/.loglife/default_opml_file.opml",
+    "enable_roms": true,
     "roms_directory": "~/.loglife/roms"
 }

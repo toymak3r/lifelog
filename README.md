@@ -1,4 +1,6 @@
-# LifeLog
+# Lifelog
+
+[![Coverage](https://github.com/toymak3r/lifelog/actions/workflows/python-app.yml/badge.svg)](https://github.com/toymak3r/lifelog/actions/workflows/python-app.yml)
 
 Welcome to LifeLog, a personal journaling and life tracking application.
 

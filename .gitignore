@@ -121,3 +121,6 @@ desktop.ini
 # IDE
 .vscode/
 .idea/
+
+# Config files
+*.config.ini

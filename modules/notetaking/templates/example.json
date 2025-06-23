@@ -1,0 +1,13 @@
+{
+  "groups": {
+    "Daily Reflections": ["Mood", "Gratitude"],
+    "Health Tracking": ["Sleep", "Exercise", "Diet"]
+  },
+  "sections": {
+    "Mood": "How do you feel today?",
+    "Gratitude": "What are you grateful for?",
+    "Sleep": "How was your sleep?",
+    "Exercise": "What exercise did you do?",
+    "Diet": "What did you eat today?"
+  }
+} 
